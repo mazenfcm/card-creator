@@ -35,15 +35,15 @@ export interface CardCanvasHandle {
 const BASE = 1024;
 
 // Font sizes relative to 1024 base
-const FONT_NAME_SIZE = 90;  // +5
-const FONT_OVR_SIZE = 145;
-const FONT_POS_SIZE = 91;   // +1
+const FONT_NAME_SIZE = 88;  // 90 - 2
+const FONT_OVR_SIZE = 144;  // 145 - 1
+const FONT_POS_SIZE = 92;   // 91 + 1
 
 // Text boxes (x, y, w, h) at 1024 base
 const COORDS = {
-  name:     { x: 350, y: 660, w: 324, h: 91 },  // y +1
-  ovr:      { x: 225, y: 116, w: 162, h: 103 }, // x -2, y +6
-  position: { x: 257, y: 255, w: 94,  h: 65 },  // y +5
+  name:     { x: 350, y: 664, w: 324, h: 91 },  // y +4
+  ovr:      { x: 223, y: 120, w: 162, h: 103 }, // x -2, y +4
+  position: { x: 257, y: 259, w: 94,  h: 65 },  // y +4
 };
 
 // Asset positions at 1024 base
