@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FC Mobile Card Creator</title>
+  <script>
+    // GitHub Pages SPA redirect
+    const path = location.pathname;
+    // Only redirect if not already on the 404.html page
+    if (!path.endsWith('404.html')) {
+      // Store the redirect path and go to index
+      sessionStorage.redirect = path;
+      location.replace('/card-creator/');
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
