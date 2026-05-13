@@ -22,9 +22,11 @@ async function loadAssetsFromGitHub(folder: string): Promise<Asset[]> {
     }
     
     const files = await response.json();
+    console.log(`Loaded ${folder}:`, files.length, 'files');
     
     const assets = files
       .filter((file: any) => file.name.endsWith('.png'))
+      .filter((file: any) => !file.name.startsWith('.'))
       .map((file: any) => ({
         id: file.name,
         name: file.name.replace(/\.png$/, ''),
@@ -32,6 +34,7 @@ async function loadAssetsFromGitHub(folder: string): Promise<Asset[]> {
       }))
       .sort((a: Asset, b: Asset) => a.name.localeCompare(b.name));
     
+    console.log(`Filtered ${folder}:`, assets.length, 'PNG files');
     return assets;
   } catch (error) {
     console.error(`Error loading ${folder}:`, error);
