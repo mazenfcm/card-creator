@@ -1,4 +1,4 @@
-/**
+/*
  * Home — FC Mobile Card Creator
  * Design: Dark Cyber-Football / Neon Brutalism
  * Layout: Asymmetric split — left controls (42%) / right live preview (58%)
@@ -34,59 +34,6 @@ type ModalType = "background" | "flag" | "league" | "club" | null;
 const POSITIONS = ["ST", "CF", "LW", "RW", "CAM", "CM", "CDM", "LM", "RM", "LB", "RB", "CB", "GK"];
 
 export default function Home() {
-  // Load flags from /public/assets/flags on mount
-  useEffect(() => {
-    const loadFlags = async () => {
-      try {
-        // Dynamically import all PNG files from assets/flags
-        const flagFiles = import.meta.glob('/public/assets/flags/*.png', { eager: true });
-        const flags = Object.keys(flagFiles)
-          .map(path => {
-            const filename = path.split('/').pop() || '';
-            return {
-              id: filename,
-              name: filename.replace('.png', ''),
-              url: `/assets/flags/${filename}`,
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        
-        if (flags.length > 0) {
-          setFlagGallery(flags);
-        }
-      } catch (error) {
-        console.log('Flags loading: manual upload available');
-      }
-    };
-    loadFlags();
-
-  // Load leagues from /public/assets/leagues on mount
-  useEffect(() => {
-    const loadLeagues = async () => {
-      try {
-        const leagueFiles = import.meta.glob('/public/assets/leagues/*.png', { eager: true });
-        const leagues = Object.keys(leagueFiles)
-          .map(path => {
-            const filename = path.split('/').pop() || '';
-            return {
-              id: filename,
-              name: filename.replace('.png', ''),
-              url: `/assets/leagues/${filename}`,
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        
-        if (leagues.length > 0) {
-          setLeagueGallery(leagues);
-        }
-      } catch (error) {
-        console.log('Leagues loading: manual upload available');
-      }
-    };
-    loadLeagues();
-  }, []);
-  }, []);
-
   // ── Card data state ──
   const [cardData, setCardData] = useState<CardData>({
     name: "PLAYER NAME",
@@ -118,7 +65,6 @@ export default function Home() {
 
   const canvasRef = useRef<CardCanvasHandle>(null);
 
-
   // Load flags from /public/assets/flags on mount
   useEffect(() => {
     const loadFlags = async () => {
@@ -170,6 +116,7 @@ export default function Home() {
     };
     loadLeagues();
   }, []);
+
   // Sync selected assets into cardData
   useEffect(() => {
     setCardData((prev) => ({
@@ -183,32 +130,12 @@ export default function Home() {
     triggerPulse();
   }, [selectedBg, selectedFlag, selectedLeague, selectedClub, renderUrl]);
 
-  const triggerPulse = () => {
+  const triggerPulse = useCallback(() => {
     setCardPulse(true);
-    setTimeout(() => setCardPulse(false), 300);
-  };
-
-  const updateCard = useCallback(<K extends keyof CardData>(key: K, value: CardData[K]) => {
-    setCardData((prev) => ({ ...prev, [key]: value }));
-    triggerPulse();
+    setTimeout(() => setCardPulse(false), 400);
   }, []);
 
-  const handleDownload = async (size: number) => {
-    const blob = await canvasRef.current?.exportCanvas(size);
-    if (!blob) {
-      toast.error("Failed to export card");
-      return;
-    }
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${cardData.name || "card"}_${size}x${size}.png`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(`Card downloaded at ${size}×${size}!`);
-  };
-
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setCardData({
       name: "PLAYER NAME",
       ovr: "99",
@@ -223,39 +150,64 @@ export default function Home() {
     setSelectedLeague(undefined);
     setSelectedClub(undefined);
     setRenderUrl(undefined);
-    toast.info("Card reset");
-  };
+    toast.success("Card reset to defaults");
+  }, []);
+
+  const handleDownload = useCallback(async (size: number) => {
+    if (!canvasRef.current) {
+      toast.error("Canvas not ready");
+      return;
+    }
+
+    try {
+      const blob = await canvasRef.current.exportCanvas(size);
+      if (!blob) {
+        toast.error("Failed to export card");
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `fc-card-${size}x${size}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(`Card downloaded (${size}x${size})`);
+    } catch (error) {
+      toast.error("Download failed");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* ── Header ── */}
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-border px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center shadow-lg" style={{ boxShadow: "0 0 16px rgba(124,58,237,0.5)" }}>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
             <Sparkles size={18} className="text-white" />
           </div>
           <div>
-            <h1 className="font-display text-base font-bold text-foreground leading-none">FC CARD CREATOR</h1>
-            <p className="text-[10px] text-muted-foreground mt-0.5 font-mono-custom tracking-wider">FC MOBILE EDITION</p>
+            <h1 className="font-display font-black text-lg sm:text-xl text-foreground">FC CARD CREATOR</h1>
+            <p className="text-[10px] text-muted-foreground tracking-widest">FC MOBILE EDITION</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <motion.button
-            type="button"
             onClick={handleReset}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-medium transition-all duration-150"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-border text-foreground text-xs sm:text-sm font-display font-bold hover:bg-muted transition-colors"
             whileTap={{ scale: 0.96 }}
           >
-            <RefreshCw size={12} />
+            <RefreshCw size={14} />
             Reset
           </motion.button>
           <motion.button
-            type="button"
             onClick={() => setDownloadOpen(true)}
-            className="btn-glow flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 text-white text-xs font-display font-bold transition-colors duration-150"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-purple-600 text-white text-xs sm:text-sm font-display font-bold hover:bg-purple-700 transition-colors"
             whileTap={{ scale: 0.96 }}
           >
-            <Download size={12} />
+            <Download size={14} />
             Download
           </motion.button>
         </div>
@@ -263,174 +215,6 @@ export default function Home() {
 
       {/* ── Main Layout ── */}
       <div className="flex flex-col-reverse lg:flex-row flex-1 overflow-hidden">
-        {/* ── Controls Panel: Bottom on Mobile / Right on Desktop ── */}
-        <div className="w-full lg:w-[42%] xl:w-[38%] border-t lg:border-t-0 lg:border-r border-border overflow-y-auto">
-          <div className="p-5 space-y-5">
-
-            {/* Player Info */}
-            <section className="panel p-4 space-y-4">
-              <div className="flex items-center gap-2 mb-1">
-                <Layers size={13} className="text-purple-400" />
-                <span className="section-label">Player Info</span>
-              </div>
-              <div className="neon-divider mb-3" />
-
-              {/* Name */}
-              <div>
-                <label className="section-label block mb-1.5">Player Name</label>
-                <input
-                  type="text"
-                  value={cardData.name}
-                  onChange={(e) => updateCard("name", e.target.value)}
-                  placeholder="Enter player name"
-                  maxLength={20}
-                  className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground input-glow font-display uppercase tracking-wider"
-                />
-              </div>
-
-              {/* OVR + Position row */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="section-label block mb-1.5">Overall (OVR)</label>
-                  <input
-                    type="text"
-                    value={cardData.ovr}
-                    onChange={(e) => updateCard("ovr", e.target.value.replace(/\D/g, "").slice(0, 3))}
-                    placeholder="99"
-                    maxLength={3}
-                    className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground input-glow font-display text-center text-lg font-bold"
-                  />
-                </div>
-                <div>
-                  <label className="section-label block mb-1.5">Position</label>
-                  <div className="relative">
-                    <select
-                      value={cardData.position}
-                      onChange={(e) => updateCard("position", e.target.value)}
-                      className="w-full appearance-none bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground input-glow font-display font-bold pr-8"
-                    >
-                      {POSITIONS.map((p) => (
-                        <option key={p} value={p}>{p}</option>
-                      ))}
-                    </select>
-                    <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Player Type */}
-              <div>
-                <label className="section-label block mb-1.5">Card Type</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {(["Icon", "Live"] as const).map((type) => (
-                    <motion.button
-                      key={type}
-                      type="button"
-                      onClick={() => updateCard("playerType", type)}
-                      className={`py-2.5 rounded-lg text-sm font-display font-bold transition-all duration-150 border ${
-                        cardData.playerType === type
-                          ? "bg-purple-700/30 border-purple-500/60 text-purple-300"
-                          : "bg-muted border-border text-muted-foreground hover:border-border/80"
-                      }`}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      {type}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Text Colors */}
-            <section className="panel p-4 space-y-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
-                <span className="section-label">Text Colors</span>
-              </div>
-              <div className="neon-divider mb-3" />
-              <ColorPickerField
-                label="Name Color"
-                value={cardData.nameColor}
-                onChange={(v) => updateCard("nameColor", v)}
-              />
-              <ColorPickerField
-                label="OVR Color"
-                value={cardData.ovrColor}
-                onChange={(v) => updateCard("ovrColor", v)}
-              />
-              <ColorPickerField
-                label="Position Color"
-                value={cardData.positionColor}
-                onChange={(v) => updateCard("positionColor", v)}
-              />
-            </section>
-
-            {/* Card Assets */}
-            <section className="panel p-4 space-y-4">
-              <div className="flex items-center gap-2 mb-1">
-                <Eye size={13} className="text-purple-400" />
-                <span className="section-label">Card Assets</span>
-              </div>
-              <div className="neon-divider mb-3" />
-
-              <AssetPickerButton
-                label="Card Background"
-                selected={selectedBg}
-                onClick={() => setOpenModal("background")}
-                placeholder="Upload or choose background"
-              />
-
-              <RenderUploadZone
-                value={renderUrl}
-                onChange={(url) => setRenderUrl(url)}
-              />
-
-              <AssetPickerButton
-                label="Nation Flag"
-                selected={selectedFlag}
-                onClick={() => setOpenModal("flag")}
-                placeholder="Upload or choose flag"
-              />
-
-              <AssetPickerButton
-                label="League Logo"
-                selected={selectedLeague}
-                onClick={() => setOpenModal("league")}
-                placeholder="Upload or choose league"
-              />
-
-              {cardData.playerType === "Live" && (
-                <AnimatePresence>
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <AssetPickerButton
-                      label="Club Logo"
-                      selected={selectedClub}
-                      onClick={() => setOpenModal("club")}
-                      placeholder="Upload or choose club"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              )}
-            </section>
-
-            {/* Download CTA (bottom of controls) */}
-            <motion.button
-              type="button"
-              onClick={() => setDownloadOpen(true)}
-              className="btn-glow btn-shimmer w-full py-3.5 rounded-xl text-white font-display font-bold text-sm flex items-center justify-center gap-2"
-              whileTap={{ scale: 0.97 }}
-            >
-              <Download size={15} />
-              Export Card
-            </motion.button>
-          </div>
-        </div>
-
         {/* ── Preview Panel: Top on Mobile / Left on Desktop ── */}
         <div className="w-full lg:w-[58%] flex flex-col items-center justify-center bg-background relative overflow-hidden border-b lg:border-b-0 lg:border-r border-border">
           {/* Background grid pattern */}
@@ -507,27 +291,148 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ── Old Mobile Preview (hidden) ── */}
-        <div className="hidden lg:hidden fixed bottom-0 inset-x-0 z-20 border-t border-border bg-background/95 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg overflow-hidden border border-purple-500/30 flex-shrink-0">
-            <CardCanvas
-              data={cardData}
-              className="w-full h-full"
-            />
+        {/* ── Controls Panel: Bottom on Mobile / Right on Desktop ── */}
+        <div className="w-full lg:w-[42%] xl:w-[38%] border-t lg:border-t-0 lg:border-l border-border overflow-y-auto">
+          <div className="p-4 sm:p-5 space-y-4 sm:space-y-5">
+            {/* ── Player Info Section ── */}
+            <motion.div
+              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="flex items-center gap-2">
+                <Layers size={14} className="text-purple-400" />
+                <h2 className="section-label">PLAYER INFO</h2>
+              </div>
+
+              {/* Player Name */}
+              <div>
+                <label className="text-xs font-display font-bold text-purple-300 tracking-wider">PLAYER NAME</label>
+                <input
+                  type="text"
+                  value={cardData.name}
+                  onChange={(e) => setCardData((prev) => ({ ...prev, name: e.target.value }))}
+                  placeholder="PLAYER NAME"
+                  className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                />
+              </div>
+
+              {/* OVR & Position */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">OVERALL (OVR)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={cardData.ovr}
+                    onChange={(e) => setCardData((prev) => ({ ...prev, ovr: e.target.value }))}
+                    className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">POSITION</label>
+                  <select
+                    value={cardData.position}
+                    onChange={(e) => setCardData((prev) => ({ ...prev, position: e.target.value }))}
+                    className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  >
+                    {POSITIONS.map((pos) => (
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Card Type */}
+              <div>
+                <label className="text-xs font-display font-bold text-purple-300 tracking-wider">CARD TYPE</label>
+                <div className="flex gap-2 mt-2">
+                  {["Icon", "Live"].map((type) => (
+                    <motion.button
+                      key={type}
+                      onClick={() => setCardData((prev) => ({ ...prev, playerType: type as "Icon" | "Live" }))}
+                      className={`flex-1 py-2 rounded-lg font-display font-bold text-sm transition-all ${
+                        cardData.playerType === type
+                          ? "bg-purple-600 text-white border border-purple-500"
+                          : "bg-background border border-border text-foreground hover:border-purple-500/50"
+                      }`}
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      {type}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ── Text Colors Section ── */}
+            <motion.div
+              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+            >
+              <div className="flex items-center gap-2">
+                <Eye size={14} className="text-purple-400" />
+                <h2 className="section-label">TEXT COLORS</h2>
+              </div>
+
+              <ColorPickerField
+                label="NAME COLOR"
+                value={cardData.nameColor}
+                onChange={(color) => setCardData((prev) => ({ ...prev, nameColor: color }))}
+              />
+              <ColorPickerField
+                label="OVR COLOR"
+                value={cardData.ovrColor}
+                onChange={(color) => setCardData((prev) => ({ ...prev, ovrColor: color }))}
+              />
+              <ColorPickerField
+                label="POSITION COLOR"
+                value={cardData.positionColor}
+                onChange={(color) => setCardData((prev) => ({ ...prev, positionColor: color }))}
+              />
+            </motion.div>
+
+            {/* ── Assets Section ── */}
+            <motion.div
+              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h2 className="section-label">CARD ASSETS</h2>
+
+              <RenderUploadZone onUpload={(url) => setRenderUrl(url)} />
+
+              <div className="grid grid-cols-2 gap-2">
+                <AssetPickerButton
+                  label="Background"
+                  selected={selectedBg}
+                  onClick={() => setOpenModal("background")}
+                />
+                <AssetPickerButton
+                  label="Flag"
+                  selected={selectedFlag}
+                  onClick={() => setOpenModal("flag")}
+                />
+                <AssetPickerButton
+                  label="League"
+                  selected={selectedLeague}
+                  onClick={() => setOpenModal("league")}
+                />
+                <AssetPickerButton
+                  label="Club"
+                  selected={selectedClub}
+                  onClick={() => setOpenModal("club")}
+                />
+              </div>
+            </motion.div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-display font-bold text-foreground truncate">{cardData.name || "Card Preview"}</p>
-            <p className="text-xs text-muted-foreground">{cardData.ovr} OVR · {cardData.position}</p>
-          </div>
-          <motion.button
-            type="button"
-            onClick={() => setDownloadOpen(true)}
-            className="btn-glow flex items-center gap-1.5 px-3 py-2 rounded-lg bg-purple-700 text-white text-xs font-display font-bold"
-            whileTap={{ scale: 0.96 }}
-          >
-            <Download size={12} />
-            Export
-          </motion.button>
         </div>
       </div>
 
@@ -553,7 +458,7 @@ export default function Home() {
       <AssetGalleryModal
         open={openModal === "league"}
         onClose={() => setOpenModal(null)}
-        title="League Logos"
+        title="Leagues"
         assets={leagueGallery}
         selectedId={selectedLeague?.id}
         onSelect={(a) => { setSelectedLeague(a); setOpenModal(null); }}
@@ -562,7 +467,7 @@ export default function Home() {
       <AssetGalleryModal
         open={openModal === "club"}
         onClose={() => setOpenModal(null)}
-        title="Club Logos"
+        title="Clubs"
         assets={clubGallery}
         selectedId={selectedClub?.id}
         onSelect={(a) => { setSelectedClub(a); setOpenModal(null); }}
