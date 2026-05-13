@@ -17,8 +17,8 @@ function AppRouter() {
 }
 
 function App() {
-  // Get base path from import.meta.env.BASE_URL or default to '/'
-  const basePath = import.meta.env.BASE_URL || '/';
+  // Use root as base path for GitHub Pages
+  const basePath = '/';
   
   return (
     <ErrorBoundary>

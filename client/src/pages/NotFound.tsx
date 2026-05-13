@@ -7,7 +7,7 @@ export default function NotFound() {
   const [, setLocation] = useLocation();
 
   const handleGoHome = () => {
-    setLocation("/card-creator/");
+    setLocation("/");
   };
 
   return (
