@@ -15,7 +15,7 @@ export function useAssets() {
   useEffect(() => {
     const loadAssets = async () => {
       try {
-        const response = await fetch('./assets.json');
+        const response = await fetch(new URL('./assets.json', import.meta.url).href);
         if (!response.ok) throw new Error('Failed to load assets.json');
         
         const data = await response.json();
