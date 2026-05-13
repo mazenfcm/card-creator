@@ -76,7 +76,7 @@ export default function Home() {
             return {
               id: filename,
               name: filename.replace('.png', ''),
-              url: `/assets/flags/${filename}`,
+              url: `./assets/flags/${filename}`,
             };
           })
           .sort((a, b) => a.name.localeCompare(b.name));
@@ -102,7 +102,7 @@ export default function Home() {
             return {
               id: filename,
               name: filename.replace('.png', ''),
-              url: `/assets/leagues/${filename}`,
+              url: `./assets/leagues/${filename}`,
             };
           })
           .sort((a, b) => a.name.localeCompare(b.name));
@@ -128,7 +128,7 @@ export default function Home() {
             return {
               id: filename,
               name: filename.replace('.png', ''),
-              url: `/assets/clubs/${filename}`,
+              url: `./assets/clubs/${filename}`,
             };
           })
           .sort((a, b) => a.name.localeCompare(b.name));
@@ -147,10 +147,10 @@ export default function Home() {
   useEffect(() => {
     setCardData((prev) => ({
       ...prev,
-      backgroundUrl: selectedBg?.url,
-      nationUrl: selectedFlag?.url,
-      leagueUrl: selectedLeague?.url,
-      clubUrl: selectedClub?.url,
+      backgroundUrl: selectedBg?.url ? `${window.location.origin}${window.location.pathname}${selectedBg.url}` : undefined,
+      nationUrl: selectedFlag?.url ? `${window.location.origin}${window.location.pathname}${selectedFlag.url}` : undefined,
+      leagueUrl: selectedLeague?.url ? `${window.location.origin}${window.location.pathname}${selectedLeague.url}` : undefined,
+      clubUrl: selectedClub?.url ? `${window.location.origin}${window.location.pathname}${selectedClub.url}` : undefined,
       renderUrl,
     }));
     triggerPulse();
