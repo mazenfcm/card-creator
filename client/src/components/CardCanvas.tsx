@@ -104,6 +104,13 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
+      // Wait for font to load
+      try {
+        await document.fonts.load('700 100px CruyffSans');
+      } catch (e) {
+        console.warn('Font loading failed, using fallback');
+      }
+
       canvas.width = BASE;
       canvas.height = BASE;
 
@@ -111,6 +118,9 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
       ctx.clearRect(0, 0, BASE, BASE);
       ctx.fillStyle = "#0a0a0f";
       ctx.fillRect(0, 0, BASE, BASE);
+
+      // Ensure font is set for context
+      ctx.font = 'bold 100px CruyffSans, sans-serif';
 
       // 1. Background
       if (data.backgroundUrl) {
@@ -130,30 +140,33 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
 
       // 3. Text
       if (data.name) {
+        ctx.font = `bold ${FONT_NAME_SIZE}px CruyffSans, sans-serif`;
         drawCenteredText(
           ctx,
           data.name.toUpperCase(),
           COORDS.name,
           data.nameColor || "#FFFFFF",
-          `bold ${FONT_NAME_SIZE}px 'CruyffSans', sans-serif`
+          `bold ${FONT_NAME_SIZE}px CruyffSans, sans-serif`
         );
       }
       if (data.ovr) {
+        ctx.font = `bold ${FONT_OVR_SIZE}px CruyffSans, sans-serif`;
         drawCenteredText(
           ctx,
           data.ovr,
           COORDS.ovr,
           data.ovrColor || "#FFFFFF",
-          `bold ${FONT_OVR_SIZE}px 'CruyffSans', sans-serif`
+          `bold ${FONT_OVR_SIZE}px CruyffSans, sans-serif`
         );
       }
       if (data.position) {
+        ctx.font = `bold ${FONT_POS_SIZE}px CruyffSans, sans-serif`;
         drawCenteredText(
           ctx,
           data.position.toUpperCase(),
           COORDS.position,
           data.positionColor || "#FFFFFF",
-          `bold ${FONT_POS_SIZE}px 'CruyffSans', sans-serif`
+          `bold ${FONT_POS_SIZE}px CruyffSans, sans-serif`
         );
       }
 
