@@ -304,16 +304,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Download shortcut */}
+          </div>
+
+          {/* Footer with download button and credit */}
+          <div className="p-4 sm:p-6 border-t border-border flex flex-col gap-3">
             <motion.button
               type="button"
               onClick={() => setDownloadOpen(true)}
-              className="btn-glow flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-purple-700/20 border border-purple-500/30 text-purple-300 text-xs sm:text-sm font-display font-bold hover:bg-purple-700/30 transition-colors"
-              whileTap={{ scale: 0.97 }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-purple-600 text-white font-display font-bold hover:bg-purple-700 transition-colors"
+              whileTap={{ scale: 0.96 }}
             >
-              <Download size={14} />
+              <Download size={16} />
               Download Card
             </motion.button>
+            <p className="text-center text-xs text-muted-foreground tracking-widest">CREATED BY MAZENFCM</p>
           </div>
         </div>
 
