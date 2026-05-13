@@ -118,6 +118,58 @@ export default function Home() {
 
   const canvasRef = useRef<CardCanvasHandle>(null);
 
+
+  // Load flags from /public/assets/flags on mount
+  useEffect(() => {
+    const loadFlags = async () => {
+      try {
+        const flagFiles = import.meta.glob('/public/assets/flags/*.png', { eager: true });
+        const flags = Object.keys(flagFiles)
+          .map(path => {
+            const filename = path.split('/').pop() || '';
+            return {
+              id: filename,
+              name: filename.replace('.png', ''),
+              url: `/assets/flags/${filename}`,
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (flags.length > 0) {
+          setFlagGallery(flags);
+        }
+      } catch (error) {
+        console.log('Flags loading: manual upload available');
+      }
+    };
+    loadFlags();
+  }, []);
+
+  // Load leagues from /public/assets/leagues on mount
+  useEffect(() => {
+    const loadLeagues = async () => {
+      try {
+        const leagueFiles = import.meta.glob('/public/assets/leagues/*.png', { eager: true });
+        const leagues = Object.keys(leagueFiles)
+          .map(path => {
+            const filename = path.split('/').pop() || '';
+            return {
+              id: filename,
+              name: filename.replace('.png', ''),
+              url: `/assets/leagues/${filename}`,
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (leagues.length > 0) {
+          setLeagueGallery(leagues);
+        }
+      } catch (error) {
+        console.log('Leagues loading: manual upload available');
+      }
+    };
+    loadLeagues();
+  }, []);
   // Sync selected assets into cardData
   useEffect(() => {
     setCardData((prev) => ({
