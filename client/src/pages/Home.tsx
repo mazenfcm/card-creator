@@ -34,6 +34,33 @@ type ModalType = "background" | "flag" | "league" | "club" | null;
 const POSITIONS = ["ST", "CF", "LW", "RW", "CAM", "CM", "CDM", "LM", "RM", "LB", "RB", "CB", "GK"];
 
 export default function Home() {
+  // Load flags from /public/assets/flags on mount
+  useEffect(() => {
+    const loadFlags = async () => {
+      try {
+        // Dynamically import all PNG files from assets/flags
+        const flagFiles = import.meta.glob('/public/assets/flags/*.png', { eager: true });
+        const flags = Object.keys(flagFiles)
+          .map(path => {
+            const filename = path.split('/').pop() || '';
+            return {
+              id: filename,
+              name: filename.replace('.png', ''),
+              url: `/assets/flags/${filename}`,
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (flags.length > 0) {
+          setFlagGallery(flags);
+        }
+      } catch (error) {
+        console.log('Flags loading: manual upload available');
+      }
+    };
+    loadFlags();
+  }, []);
+
   // ── Card data state ──
   const [cardData, setCardData] = useState<CardData>({
     name: "PLAYER NAME",
