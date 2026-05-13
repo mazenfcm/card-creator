@@ -114,20 +114,22 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
       canvas.width = BASE;
       canvas.height = BASE;
 
-      // Clear
+      // Clear with transparent background
       ctx.clearRect(0, 0, BASE, BASE);
-      ctx.fillStyle = "#0a0a0f";
-      ctx.fillRect(0, 0, BASE, BASE);
 
-      // Ensure font is set for context
+      // Ensure font is set for context and composite mode
       ctx.font = 'bold 100px CruyffSans, sans-serif';
+      ctx.globalCompositeOperation = 'source-over';
 
-      // 1. Background
+      // 1. Background (optional - if not provided, transparent)
       if (data.backgroundUrl) {
         try {
           const bg = await loadImage(data.backgroundUrl);
           ctx.drawImage(bg, 0, 0, BASE, BASE);
         } catch {/* ignore */}
+      } else {
+        // Keep transparent if no background provided
+        ctx.clearRect(0, 0, BASE, BASE);
       }
 
       // 2. Render layer
