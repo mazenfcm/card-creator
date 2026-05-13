@@ -115,6 +115,7 @@ export default function Home() {
       }
     };
     loadLeagues();
+  }, []);
 
   // Load clubs from /public/assets/clubs on mount
   useEffect(() => {
@@ -140,7 +141,6 @@ export default function Home() {
       }
     };
     loadClubs();
-  }, []);
   }, []);
 
   // Sync selected assets into cardData
