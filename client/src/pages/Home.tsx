@@ -59,6 +59,32 @@ export default function Home() {
       }
     };
     loadFlags();
+
+  // Load leagues from /public/assets/leagues on mount
+  useEffect(() => {
+    const loadLeagues = async () => {
+      try {
+        const leagueFiles = import.meta.glob('/public/assets/leagues/*.png', { eager: true });
+        const leagues = Object.keys(leagueFiles)
+          .map(path => {
+            const filename = path.split('/').pop() || '';
+            return {
+              id: filename,
+              name: filename.replace('.png', ''),
+              url: `/assets/leagues/${filename}`,
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (leagues.length > 0) {
+          setLeagueGallery(leagues);
+        }
+      } catch (error) {
+        console.log('Leagues loading: manual upload available');
+      }
+    };
+    loadLeagues();
+  }, []);
   }, []);
 
   // ── Card data state ──
