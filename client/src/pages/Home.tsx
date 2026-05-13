@@ -84,10 +84,10 @@ export default function Home() {
   useEffect(() => {
     setCardData((prev) => ({
       ...prev,
-      backgroundUrl: selectedBg?.url ? `${window.location.origin}${window.location.pathname}${selectedBg.url}` : undefined,
-      nationUrl: selectedFlag?.url ? `${window.location.origin}${window.location.pathname}${selectedFlag.url}` : undefined,
-      leagueUrl: selectedLeague?.url ? `${window.location.origin}${window.location.pathname}${selectedLeague.url}` : undefined,
-      clubUrl: selectedClub?.url ? `${window.location.origin}${window.location.pathname}${selectedClub.url}` : undefined,
+      backgroundUrl: selectedBg?.url,
+      nationUrl: selectedFlag?.url,
+      leagueUrl: selectedLeague?.url,
+      clubUrl: selectedClub?.url,
       renderUrl,
     }));
     triggerPulse();

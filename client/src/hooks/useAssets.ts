@@ -15,22 +15,23 @@ export function useAssets() {
 
   useEffect(() => {
     try {
+      const baseUrl = `${window.location.origin}${window.location.pathname}`;
       setFlags(assetsData.flags.map((filename: string) => ({
         id: filename,
         name: filename.replace('.png', ''),
-        url: `./assets/flags/${filename}`,
+        url: `${baseUrl}assets/flags/${filename}`,
       })));
       
       setLeagues(assetsData.leagues.map((filename: string) => ({
         id: filename,
         name: filename.replace('.png', ''),
-        url: `./assets/leagues/${filename}`,
+        url: `${baseUrl}assets/leagues/${filename}`,
       })));
       
       setClubs(assetsData.clubs.map((filename: string) => ({
         id: filename,
         name: filename.replace('.png', ''),
-        url: `./assets/clubs/${filename}`,
+        url: `${baseUrl}assets/clubs/${filename}`,
       })));
     } catch (error) {
       console.error('Failed to load assets:', error);
