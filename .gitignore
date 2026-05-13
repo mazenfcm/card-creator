@@ -3,9 +3,10 @@
 .pnpm-store/
 
 # Build outputs
-dist/
+# dist/ - Allow 404.html for GitHub Pages
 build/
 *.dist
+!dist/404.html
 
 # Environment variables
 .env
