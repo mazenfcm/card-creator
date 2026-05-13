@@ -214,7 +214,7 @@ export default function Home() {
       </header>
 
       {/* ── Main Layout ── */}
-      <div className="flex flex-col-reverse lg:flex-row flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         {/* ── Preview Panel: Top on Mobile / Left on Desktop ── */}
         <div className="w-full lg:w-[58%] flex flex-col items-center justify-center bg-background relative overflow-hidden border-b lg:border-b-0 lg:border-r border-border">
           {/* Background grid pattern */}
