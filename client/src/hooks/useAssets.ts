@@ -6,6 +6,39 @@ export interface Asset {
   url: string;
 }
 
+const GITHUB_REPO = 'mazenfcm/card-creator';
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com';
+
+async function loadAssetsFromGitHub(folder: string): Promise<Asset[]> {
+  try {
+    // Get list of files from GitHub API
+    const response = await fetch(
+      `https://api.github.com/repos/${GITHUB_REPO}/contents/assets/${folder}`
+    );
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch ${folder}:`, response.status);
+      return [];
+    }
+    
+    const files = await response.json();
+    
+    const assets = files
+      .filter((file: any) => file.name.endsWith('.png'))
+      .map((file: any) => ({
+        id: file.name,
+        name: file.name.replace(/\.png$/, ''),
+        url: `${GITHUB_RAW_URL}/${GITHUB_REPO}/main/assets/${folder}/${file.name}`,
+      }))
+      .sort((a: Asset, b: Asset) => a.name.localeCompare(b.name));
+    
+    return assets;
+  } catch (error) {
+    console.error(`Error loading ${folder}:`, error);
+    return [];
+  }
+}
+
 export function useAssets() {
   const [flags, setFlags] = useState<Asset[]>([]);
   const [leagues, setLeagues] = useState<Asset[]>([]);
@@ -13,56 +46,25 @@ export function useAssets() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      // Load flags directly from folder
-      const flagModules = import.meta.glob('../../public/assets/flags/*.png', { eager: true }) as Record<string, any>;
-      const flagAssets = Object.entries(flagModules)
-        .map(([path, module]) => {
-          const filename = path.split('/').pop() || '';
-          return {
-            id: filename,
-            name: filename.replace(/\.png$/, ''),
-            url: (module as any).default || module,
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name));
-      
-      setFlags(flagAssets);
-      
-      // Load leagues directly from folder
-      const leagueModules = import.meta.glob('../../public/assets/leagues/*.png', { eager: true }) as Record<string, any>;
-      const leagueAssets = Object.entries(leagueModules)
-        .map(([path, module]) => {
-          const filename = path.split('/').pop() || '';
-          return {
-            id: filename,
-            name: filename.replace(/\.png$/, ''),
-            url: (module as any).default || module,
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name));
-      
-      setLeagues(leagueAssets);
-      
-      // Load clubs directly from folder
-      const clubModules = import.meta.glob('../../public/assets/clubs/*.png', { eager: true }) as Record<string, any>;
-      const clubAssets = Object.entries(clubModules)
-        .map(([path, module]) => {
-          const filename = path.split('/').pop() || '';
-          return {
-            id: filename,
-            name: filename.replace(/\.png$/, ''),
-            url: (module as any).default || module,
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name));
-      
-      setClubs(clubAssets);
-    } catch (error) {
-      console.error('Failed to load assets:', error);
-    } finally {
-      setLoading(false);
-    }
+    const loadAll = async () => {
+      try {
+        const [flagsData, leaguesData, clubsData] = await Promise.all([
+          loadAssetsFromGitHub('flags'),
+          loadAssetsFromGitHub('leagues'),
+          loadAssetsFromGitHub('clubs'),
+        ]);
+        
+        setFlags(flagsData);
+        setLeagues(leaguesData);
+        setClubs(clubsData);
+      } catch (error) {
+        console.error('Failed to load assets:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAll();
   }, []);
 
   return { flags, leagues, clubs, loading };
