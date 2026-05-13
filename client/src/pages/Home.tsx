@@ -22,6 +22,7 @@ import AssetPickerButton from "@/components/AssetPickerButton";
 import ColorPickerField from "@/components/ColorPickerField";
 import RenderUploadZone from "@/components/RenderUploadZone";
 import DownloadModal from "@/components/DownloadModal";
+import { useAssets } from "@/hooks/useAssets";
 
 // ── Gallery assets — user will populate these from folders ──
 const DEFAULT_BACKGROUNDS: GalleryAsset[] = [];
@@ -64,84 +65,20 @@ export default function Home() {
   const [cardPulse, setCardPulse] = useState(false);
 
   const canvasRef = useRef<CardCanvasHandle>(null);
+  const { flags, leagues, clubs } = useAssets();
 
-  // Load flags from /public/assets/flags on mount
+  // Sync loaded assets to gallery state
   useEffect(() => {
-    const loadFlags = async () => {
-      try {
-        const flagFiles = import.meta.glob('/public/assets/flags/*.png', { eager: true });
-        const flags = Object.keys(flagFiles)
-          .map(path => {
-            const filename = path.split('/').pop() || '';
-            return {
-              id: filename,
-              name: filename.replace('.png', ''),
-              url: `./assets/flags/${filename}`,
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        
-        if (flags.length > 0) {
-          setFlagGallery(flags);
-        }
-      } catch (error) {
-        console.log('Flags loading: manual upload available');
-      }
-    };
-    loadFlags();
-  }, []);
+    if (flags.length > 0) setFlagGallery(flags);
+  }, [flags]);
 
-  // Load leagues from /public/assets/leagues on mount
   useEffect(() => {
-    const loadLeagues = async () => {
-      try {
-        const leagueFiles = import.meta.glob('/public/assets/leagues/*.png', { eager: true });
-        const leagues = Object.keys(leagueFiles)
-          .map(path => {
-            const filename = path.split('/').pop() || '';
-            return {
-              id: filename,
-              name: filename.replace('.png', ''),
-              url: `./assets/leagues/${filename}`,
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        
-        if (leagues.length > 0) {
-          setLeagueGallery(leagues);
-        }
-      } catch (error) {
-        console.log('Leagues loading: manual upload available');
-      }
-    };
-    loadLeagues();
-  }, []);
+    if (leagues.length > 0) setLeagueGallery(leagues);
+  }, [leagues]);
 
-  // Load clubs from /public/assets/clubs on mount
   useEffect(() => {
-    const loadClubs = async () => {
-      try {
-        const clubFiles = import.meta.glob('/public/assets/clubs/*.png', { eager: true });
-        const clubs = Object.keys(clubFiles)
-          .map(path => {
-            const filename = path.split('/').pop() || '';
-            return {
-              id: filename,
-              name: filename.replace('.png', ''),
-              url: `./assets/clubs/${filename}`,
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        
-        if (clubs.length > 0) {
-          setClubGallery(clubs);
-        }
-      } catch (error) {
-        console.log('Clubs loading: manual upload available');
-      }
-    };
-    loadClubs();
-  }, []);
+    if (clubs.length > 0) setClubGallery(clubs);
+  }, [clubs]);
 
   // Sync selected assets into cardData
   useEffect(() => {
