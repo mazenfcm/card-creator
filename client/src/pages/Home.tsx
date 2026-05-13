@@ -115,6 +115,32 @@ export default function Home() {
       }
     };
     loadLeagues();
+
+  // Load clubs from /public/assets/clubs on mount
+  useEffect(() => {
+    const loadClubs = async () => {
+      try {
+        const clubFiles = import.meta.glob('/public/assets/clubs/*.png', { eager: true });
+        const clubs = Object.keys(clubFiles)
+          .map(path => {
+            const filename = path.split('/').pop() || '';
+            return {
+              id: filename,
+              name: filename.replace('.png', ''),
+              url: `/assets/clubs/${filename}`,
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (clubs.length > 0) {
+          setClubGallery(clubs);
+        }
+      } catch (error) {
+        console.log('Clubs loading: manual upload available');
+      }
+    };
+    loadClubs();
+  }, []);
   }, []);
 
   // Sync selected assets into cardData
