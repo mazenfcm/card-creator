@@ -8,10 +8,11 @@ import { Upload, X, User } from "lucide-react";
 
 interface RenderUploadZoneProps {
   value?: string; // object URL
-  onChange: (url: string | undefined, file: File | undefined) => void;
+  onChange?: (url: string | undefined, file: File | undefined) => void;
+  onUpload?: (url: string) => void;
 }
 
-export default function RenderUploadZone({ value, onChange }: RenderUploadZoneProps) {
+export default function RenderUploadZone({ value, onChange, onUpload }: RenderUploadZoneProps) {
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -19,9 +20,10 @@ export default function RenderUploadZone({ value, onChange }: RenderUploadZonePr
     (file: File | null) => {
       if (!file || !file.type.startsWith("image/")) return;
       const url = URL.createObjectURL(file);
-      onChange(url, file);
+      if (onChange) onChange(url, file);
+      if (onUpload) onUpload(url);
     },
-    [onChange]
+    [onChange, onUpload]
   );
 
   return (
@@ -58,7 +60,7 @@ export default function RenderUploadZone({ value, onChange }: RenderUploadZonePr
               </div>
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onChange(undefined, undefined); }}
+                onClick={(e) => { e.stopPropagation(); if (onChange) onChange(undefined, undefined); }}
                 className="w-7 h-7 rounded-lg bg-destructive/20 flex items-center justify-center text-destructive hover:bg-destructive/30 transition-colors flex-shrink-0"
               >
                 <X size={13} />
