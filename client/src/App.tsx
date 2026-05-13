@@ -17,8 +17,8 @@ function AppRouter() {
 }
 
 function App() {
-  // Use root as base path for GitHub Pages
-  const basePath = '/';
+  // Use /card-creator/ as base path for GitHub Pages
+  const basePath = '/card-creator/';
   
   return (
     <ErrorBoundary>
