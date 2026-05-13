@@ -43,20 +43,23 @@ export function useAssets() {
   const [flags, setFlags] = useState<Asset[]>([]);
   const [leagues, setLeagues] = useState<Asset[]>([]);
   const [clubs, setClubs] = useState<Asset[]>([]);
+  const [backgrounds, setBackgrounds] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadAll = async () => {
       try {
-        const [flagsData, leaguesData, clubsData] = await Promise.all([
+        const [flagsData, leaguesData, clubsData, backgroundsData] = await Promise.all([
           loadAssetsFromGitHub('flags'),
           loadAssetsFromGitHub('leagues'),
           loadAssetsFromGitHub('clubs'),
+          loadAssetsFromGitHub('backgrounds'),
         ]);
         
         setFlags(flagsData);
         setLeagues(leaguesData);
         setClubs(clubsData);
+        setBackgrounds(backgroundsData);
       } catch (error) {
         console.error('Failed to load assets:', error);
       } finally {
@@ -67,5 +70,5 @@ export function useAssets() {
     loadAll();
   }, []);
 
-  return { flags, leagues, clubs, loading };
+  return { flags, leagues, clubs, backgrounds, loading };
 }
