@@ -135,7 +135,7 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
           data.name.toUpperCase(),
           COORDS.name,
           data.nameColor || "#FFFFFF",
-          `bold ${FONT_NAME_SIZE}px 'Orbitron', sans-serif`
+          `bold ${FONT_NAME_SIZE}px 'CruyffSans', sans-serif`
         );
       }
       if (data.ovr) {
@@ -144,7 +144,7 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
           data.ovr,
           COORDS.ovr,
           data.ovrColor || "#FFFFFF",
-          `bold ${FONT_OVR_SIZE}px 'Orbitron', sans-serif`
+          `bold ${FONT_OVR_SIZE}px 'CruyffSans', sans-serif`
         );
       }
       if (data.position) {
@@ -153,7 +153,7 @@ const CardCanvas = forwardRef<CardCanvasHandle, CardCanvasProps>(
           data.position.toUpperCase(),
           COORDS.position,
           data.positionColor || "#FFFFFF",
-          `bold ${FONT_POS_SIZE}px 'Orbitron', sans-serif`
+          `bold ${FONT_POS_SIZE}px 'CruyffSans', sans-serif`
         );
       }
 
