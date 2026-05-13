@@ -65,7 +65,7 @@ export default function Home() {
   const [cardPulse, setCardPulse] = useState(false);
 
   const canvasRef = useRef<CardCanvasHandle>(null);
-  const { flags, leagues, clubs } = useAssets();
+  const { flags, leagues, clubs, backgrounds } = useAssets();
 
   // Sync loaded assets to gallery state
   useEffect(() => {
@@ -79,6 +79,10 @@ export default function Home() {
   useEffect(() => {
     if (clubs.length > 0) setClubGallery(clubs);
   }, [clubs]);
+
+  useEffect(() => {
+    if (backgrounds.length > 0) setBgGallery(backgrounds);
+  }, [backgrounds]);
 
   // Sync selected assets into cardData
   useEffect(() => {
