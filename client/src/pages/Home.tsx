@@ -305,20 +305,6 @@ export default function Home() {
             </div>
 
           </div>
-
-          {/* Footer with download button and credit */}
-          <div className="p-4 sm:p-6 border-t border-border flex flex-col gap-3">
-            <motion.button
-              type="button"
-              onClick={() => setDownloadOpen(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-purple-600 text-white font-display font-bold hover:bg-purple-700 transition-colors"
-              whileTap={{ scale: 0.96 }}
-            >
-              <Download size={16} />
-              Download Card
-            </motion.button>
-            <p className="text-center text-xs text-muted-foreground tracking-widest">CREATED BY MAZENFCM</p>
-          </div>
         </div>
 
         {/* ── Controls Panel: Bottom on Mobile / Right on Desktop ── */}
@@ -461,6 +447,25 @@ export default function Home() {
                   onClick={() => setOpenModal("club")}
                 />
               </div>
+            </motion.div>
+
+            {/* ── Footer Section ── */}
+            <motion.div
+              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+            >
+              <motion.button
+                type="button"
+                onClick={() => setDownloadOpen(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-purple-600 text-white font-display font-bold hover:bg-purple-700 transition-colors"
+                whileTap={{ scale: 0.96 }}
+              >
+                <Download size={16} />
+                Download Card
+              </motion.button>
+              <p className="text-center text-xs text-muted-foreground tracking-widest">CREATED BY MAZENFCM</p>
             </motion.div>
           </div>
         </div>
