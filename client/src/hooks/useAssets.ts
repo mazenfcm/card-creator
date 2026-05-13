@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import assetsData from '@/data/assets.json';
 
 export interface Asset {
   id: string;
@@ -15,24 +14,50 @@ export function useAssets() {
 
   useEffect(() => {
     try {
-      const baseUrl = `${window.location.origin}${window.location.pathname}`;
-      setFlags(assetsData.flags.map((filename: string) => ({
-        id: filename,
-        name: filename.replace('.png', ''),
-        url: `${baseUrl}assets/flags/${filename}`,
-      })));
+      // Load flags directly from folder
+      const flagModules = import.meta.glob('../../public/assets/flags/*.png', { eager: true }) as Record<string, any>;
+      const flagAssets = Object.entries(flagModules)
+        .map(([path, module]) => {
+          const filename = path.split('/').pop() || '';
+          return {
+            id: filename,
+            name: filename.replace(/\.png$/, ''),
+            url: (module as any).default || module,
+          };
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
       
-      setLeagues(assetsData.leagues.map((filename: string) => ({
-        id: filename,
-        name: filename.replace('.png', ''),
-        url: `${baseUrl}assets/leagues/${filename}`,
-      })));
+      setFlags(flagAssets);
       
-      setClubs(assetsData.clubs.map((filename: string) => ({
-        id: filename,
-        name: filename.replace('.png', ''),
-        url: `${baseUrl}assets/clubs/${filename}`,
-      })));
+      // Load leagues directly from folder
+      const leagueModules = import.meta.glob('../../public/assets/leagues/*.png', { eager: true }) as Record<string, any>;
+      const leagueAssets = Object.entries(leagueModules)
+        .map(([path, module]) => {
+          const filename = path.split('/').pop() || '';
+          return {
+            id: filename,
+            name: filename.replace(/\.png$/, ''),
+            url: (module as any).default || module,
+          };
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
+      
+      setLeagues(leagueAssets);
+      
+      // Load clubs directly from folder
+      const clubModules = import.meta.glob('../../public/assets/clubs/*.png', { eager: true }) as Record<string, any>;
+      const clubAssets = Object.entries(clubModules)
+        .map(([path, module]) => {
+          const filename = path.split('/').pop() || '';
+          return {
+            id: filename,
+            name: filename.replace(/\.png$/, ''),
+            url: (module as any).default || module,
+          };
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
+      
+      setClubs(clubAssets);
     } catch (error) {
       console.error('Failed to load assets:', error);
     } finally {
