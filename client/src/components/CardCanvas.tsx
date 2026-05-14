@@ -41,8 +41,8 @@ const FONT_POS_SIZE = 94;   // 91 + 1
 
 // Text boxes (x, y, w, h) at 1024 base
 const COORDS = {
-  name:     { x: 350, y: 672, w: 324, h: 91 },  // y +4
-  ovr:      { x: 221, y: 137, w: 162, h: 103 }, // x -2, y +4
+  name:     { x: 347, y: 680, w: 324, h: 91 },  // y +4
+  ovr:      { x: 217, y: 151, w: 162, h: 103 }, // x -2, y +4
   position: { x: 260, y: 271, w: 94,  h: 65 },  // y +4
 };
 
