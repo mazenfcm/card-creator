@@ -43,7 +43,7 @@ const FONT_POS_SIZE = 96;   // 92 + 4
 const COORDS = {
   name:     { x: 348, y: 672, w: 324, h: 91 },  // x -2, y +8
   ovr:      { x: 218, y: 133, w: 162, h: 103 }, // x -5, y +13
-  position: { x: 255, y: 263, w: 97,  h: 68 },  // x -14, y -11, size -1
+  position: { x: 258, y: 266, w: 97,  h: 68 },  // x +3, y +3
 };
 
 // Asset positions at 1024 base
