@@ -34,24 +34,64 @@ type ModalType = "background" | "flag" | "league" | "club" | null;
 
 const POSITIONS = ["ST", "CF", "LW", "RW", "CAM", "CM", "CDM", "LM", "RM", "LB", "RB", "CB", "GK"];
 
+// Default KANE card data
+const DEFAULT_CARD_DATA: CardData = {
+  name: "KANE",
+  ovr: "119",
+  position: "ST",
+  playerType: "Live",
+  nameColor: "#FFFFFF",
+  ovrColor: "#FFFFFF",
+  positionColor: "#FFFFFF",
+};
+
+// localStorage keys
+const STORAGE_KEYS = {
+  cardData: "fc-card-creator-data",
+  selectedBg: "fc-card-creator-bg",
+  selectedFlag: "fc-card-creator-flag",
+  selectedLeague: "fc-card-creator-league",
+  selectedClub: "fc-card-creator-club",
+  renderUrl: "fc-card-creator-render",
+};
+
 export default function Home() {
-  // ── Card data state ──
-  const [cardData, setCardData] = useState<CardData>({
-    name: "PLAYER NAME",
-    ovr: "99",
-    position: "ST",
-    playerType: "Live",
-    nameColor: "#FFFFFF",
-    ovrColor: "#FFFFFF",
-    positionColor: "#FFFFFF",
+  // ── Card data state with localStorage ──
+  const [cardData, setCardData] = useState<CardData>(() => {
+    if (typeof window === "undefined") return DEFAULT_CARD_DATA;
+    const saved = localStorage.getItem(STORAGE_KEYS.cardData);
+    return saved ? JSON.parse(saved) : DEFAULT_CARD_DATA;
   });
 
-  // ── Asset selections ──
-  const [selectedBg, setSelectedBg] = useState<GalleryAsset | undefined>();
-  const [selectedFlag, setSelectedFlag] = useState<GalleryAsset | undefined>();
-  const [selectedLeague, setSelectedLeague] = useState<GalleryAsset | undefined>();
-  const [selectedClub, setSelectedClub] = useState<GalleryAsset | undefined>();
-  const [renderUrl, setRenderUrl] = useState<string | undefined>();
+  // ── Asset selections with localStorage ──
+  const [selectedBg, setSelectedBg] = useState<GalleryAsset | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    const saved = localStorage.getItem(STORAGE_KEYS.selectedBg);
+    return saved ? JSON.parse(saved) : undefined;
+  });
+
+  const [selectedFlag, setSelectedFlag] = useState<GalleryAsset | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    const saved = localStorage.getItem(STORAGE_KEYS.selectedFlag);
+    return saved ? JSON.parse(saved) : undefined;
+  });
+
+  const [selectedLeague, setSelectedLeague] = useState<GalleryAsset | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    const saved = localStorage.getItem(STORAGE_KEYS.selectedLeague);
+    return saved ? JSON.parse(saved) : undefined;
+  });
+
+  const [selectedClub, setSelectedClub] = useState<GalleryAsset | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    const saved = localStorage.getItem(STORAGE_KEYS.selectedClub);
+    return saved ? JSON.parse(saved) : undefined;
+  });
+
+  const [renderUrl, setRenderUrl] = useState<string | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    return localStorage.getItem(STORAGE_KEYS.renderUrl) || undefined;
+  });
 
   // ── Gallery state ──
   const [bgGallery, setBgGallery] = useState<GalleryAsset[]>(DEFAULT_BACKGROUNDS);
@@ -67,21 +107,91 @@ export default function Home() {
   const canvasRef = useRef<CardCanvasHandle>(null);
   const { flags, leagues, clubs, backgrounds } = useAssets();
 
-  // Sync loaded assets to gallery state
+  // ── Save to localStorage whenever card data changes ──
   useEffect(() => {
-    if (flags.length > 0) setFlagGallery(flags);
+    localStorage.setItem(STORAGE_KEYS.cardData, JSON.stringify(cardData));
+  }, [cardData]);
+
+  useEffect(() => {
+    if (selectedBg) localStorage.setItem(STORAGE_KEYS.selectedBg, JSON.stringify(selectedBg));
+    else localStorage.removeItem(STORAGE_KEYS.selectedBg);
+  }, [selectedBg]);
+
+  useEffect(() => {
+    if (selectedFlag) localStorage.setItem(STORAGE_KEYS.selectedFlag, JSON.stringify(selectedFlag));
+    else localStorage.removeItem(STORAGE_KEYS.selectedFlag);
+  }, [selectedFlag]);
+
+  useEffect(() => {
+    if (selectedLeague) localStorage.setItem(STORAGE_KEYS.selectedLeague, JSON.stringify(selectedLeague));
+    else localStorage.removeItem(STORAGE_KEYS.selectedLeague);
+  }, [selectedLeague]);
+
+  useEffect(() => {
+    if (selectedClub) localStorage.setItem(STORAGE_KEYS.selectedClub, JSON.stringify(selectedClub));
+    else localStorage.removeItem(STORAGE_KEYS.selectedClub);
+  }, [selectedClub]);
+
+  useEffect(() => {
+    if (renderUrl) localStorage.setItem(STORAGE_KEYS.renderUrl, renderUrl);
+    else localStorage.removeItem(STORAGE_KEYS.renderUrl);
+  }, [renderUrl]);
+
+  // Sync loaded assets to gallery state and auto-select defaults
+  useEffect(() => {
+    if (flags.length > 0) {
+      setFlagGallery(flags);
+      // Auto-select England flag if not already selected
+      if (!selectedFlag) {
+        const englandFlag = flags.find(f => f.name?.includes("England"));
+        if (englandFlag) {
+          setSelectedFlag(englandFlag);
+          localStorage.setItem(STORAGE_KEYS.selectedFlag, JSON.stringify(englandFlag));
+        }
+      }
+    }
   }, [flags]);
 
   useEffect(() => {
-    if (leagues.length > 0) setLeagueGallery(leagues);
+    if (leagues.length > 0) {
+      setLeagueGallery(leagues);
+      // Auto-select Bundesliga if not already selected
+      if (!selectedLeague) {
+        const bundesliga = leagues.find(l => l.name?.includes("Bundesliga"));
+        if (bundesliga) {
+          setSelectedLeague(bundesliga);
+          localStorage.setItem(STORAGE_KEYS.selectedLeague, JSON.stringify(bundesliga));
+        }
+      }
+    }
   }, [leagues]);
 
   useEffect(() => {
-    if (clubs.length > 0) setClubGallery(clubs);
+    if (clubs.length > 0) {
+      setClubGallery(clubs);
+      // Auto-select Bayern Munich if not already selected
+      if (!selectedClub) {
+        const bayern = clubs.find(c => c.name?.includes("Bayern"));
+        if (bayern) {
+          setSelectedClub(bayern);
+          localStorage.setItem(STORAGE_KEYS.selectedClub, JSON.stringify(bayern));
+        }
+      }
+    }
   }, [clubs]);
 
   useEffect(() => {
-    if (backgrounds.length > 0) setBgGallery(backgrounds);
+    if (backgrounds.length > 0) {
+      setBgGallery(backgrounds);
+      // Auto-select TOTS26 LIVE background if not already selected
+      if (!selectedBg) {
+        const tots26 = backgrounds.find(b => b.name?.includes("TOTS26") && b.name?.includes("LIVE"));
+        if (tots26) {
+          setSelectedBg(tots26);
+          localStorage.setItem(STORAGE_KEYS.selectedBg, JSON.stringify(tots26));
+        }
+      }
+    }
   }, [backgrounds]);
 
   // Sync selected assets into cardData
@@ -103,20 +213,18 @@ export default function Home() {
   }, []);
 
   const handleReset = useCallback(() => {
-    setCardData({
-      name: "PLAYER NAME",
-      ovr: "99",
-      position: "ST",
-      playerType: "Live",
-      nameColor: "#FFFFFF",
-      ovrColor: "#FFFFFF",
-      positionColor: "#FFFFFF",
-    });
+    setCardData(DEFAULT_CARD_DATA);
     setSelectedBg(undefined);
     setSelectedFlag(undefined);
     setSelectedLeague(undefined);
     setSelectedClub(undefined);
     setRenderUrl(undefined);
+    localStorage.removeItem(STORAGE_KEYS.cardData);
+    localStorage.removeItem(STORAGE_KEYS.selectedBg);
+    localStorage.removeItem(STORAGE_KEYS.selectedFlag);
+    localStorage.removeItem(STORAGE_KEYS.selectedLeague);
+    localStorage.removeItem(STORAGE_KEYS.selectedClub);
+    localStorage.removeItem(STORAGE_KEYS.renderUrl);
     toast.success("Card reset to defaults");
   }, []);
 
@@ -145,6 +253,18 @@ export default function Home() {
     } catch (error) {
       toast.error("Download failed");
     }
+  }, []);
+
+  const handleAssetSelect = useCallback((asset: GalleryAsset, type: "background" | "flag" | "league" | "club") => {
+    if (type === "background") setSelectedBg(asset);
+    if (type === "flag") setSelectedFlag(asset);
+    if (type === "league") setSelectedLeague(asset);
+    if (type === "club") setSelectedClub(asset);
+    setOpenModal(null);
+  }, []);
+
+  const handleRenderUpload = useCallback((url: string) => {
+    setRenderUrl(url);
   }, []);
 
   return (
@@ -281,8 +401,6 @@ export default function Home() {
                   <label className="text-xs font-display font-bold text-purple-300 tracking-wider">OVERALL (OVR)</label>
                   <input
                     type="number"
-                    min="1"
-                    max="99"
                     value={cardData.ovr}
                     onChange={(e) => setCardData((prev) => ({ ...prev, ovr: e.target.value }))}
                     className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
@@ -300,26 +418,31 @@ export default function Home() {
                   />
                 </div>
               </div>
+            </motion.div>
 
-              {/* Card Type */}
-              <div>
-                <label className="text-xs font-display font-bold text-purple-300 tracking-wider">CARD TYPE</label>
-                <div className="flex gap-2 mt-2">
-                  {["Icon", "Live"].map((type) => (
-                    <motion.button
-                      key={type}
-                      onClick={() => setCardData((prev) => ({ ...prev, playerType: type as "Icon" | "Live" }))}
-                      className={`flex-1 py-2 rounded-lg font-display font-bold text-sm transition-all ${
-                        cardData.playerType === type
-                          ? "bg-purple-600 text-white border border-purple-500"
-                          : "bg-background border border-border text-foreground hover:border-purple-500/50"
-                      }`}
-                      whileTap={{ scale: 0.96 }}
-                    >
-                      {type}
-                    </motion.button>
-                  ))}
-                </div>
+            {/* ── Card Type Section ── */}
+            <motion.div
+              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+            >
+              <label className="text-xs font-display font-bold text-purple-300 tracking-wider block">CARD TYPE</label>
+              <div className="flex gap-2">
+                {(["Icon", "Live"] as const).map((type) => (
+                  <motion.button
+                    key={type}
+                    onClick={() => setCardData((prev) => ({ ...prev, playerType: type }))}
+                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-display font-bold transition-all ${
+                      cardData.playerType === type
+                        ? "bg-purple-600 text-white"
+                        : "bg-background border border-border text-foreground hover:border-purple-500"
+                    }`}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    {type}
+                  </motion.button>
+                ))}
               </div>
             </motion.div>
 
@@ -328,13 +451,12 @@ export default function Home() {
               className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
+              transition={{ delay: 0.2 }}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-2">
                 <Eye size={14} className="text-purple-400" />
-                <h2 className="section-label">TEXT COLORS</h2>
+                <h3 className="section-label">TEXT COLORS</h3>
               </div>
-
               <ColorPickerField
                 label="NAME COLOR"
                 value={cardData.nameColor}
@@ -352,107 +474,101 @@ export default function Home() {
               />
             </motion.div>
 
-            {/* ── Assets Section ── */}
-            <motion.div
-              className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="section-label">CARD ASSETS</h2>
-
-              <RenderUploadZone onUpload={(url) => setRenderUrl(url)} />
-
-              <div className="grid grid-cols-2 gap-2">
-                <AssetPickerButton
-                  label="Background"
-                  selected={selectedBg}
-                  onClick={() => setOpenModal("background")}
-                />
-                <AssetPickerButton
-                  label="Flag"
-                  selected={selectedFlag}
-                  onClick={() => setOpenModal("flag")}
-                />
-                <AssetPickerButton
-                  label="League"
-                  selected={selectedLeague}
-                  onClick={() => setOpenModal("league")}
-                />
-                <AssetPickerButton
-                  label="Club"
-                  selected={selectedClub}
-                  onClick={() => setOpenModal("club")}
-                />
-              </div>
-            </motion.div>
-
-            {/* ── Footer Section ── */}
+            {/* ── Card Assets Section ── */}
             <motion.div
               className="space-y-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
             >
-              <motion.button
-                type="button"
-                onClick={() => setDownloadOpen(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-purple-600 text-white font-display font-bold hover:bg-purple-700 transition-colors"
-                whileTap={{ scale: 0.96 }}
-              >
-                <Download size={16} />
-                Download Card
-              </motion.button>
-              <p className="text-center text-xs text-muted-foreground tracking-widest">CREATED BY MAZENFCM</p>
+              <h3 className="section-label">CARD ASSETS</h3>
+
+              {/* Player Render */}
+              <div>
+                <label className="text-xs font-display font-bold text-purple-300 tracking-wider block mb-2">PLAYER RENDER</label>
+                <RenderUploadZone onUpload={handleRenderUpload} />
+              </div>
+
+              {/* Background */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">BACKGROUND</label>
+                  {selectedBg && <span className="text-[10px] text-muted-foreground">{selectedBg.name}</span>}
+                </div>
+                <AssetPickerButton
+                  label="Choose from gallery"
+                  onClick={() => setOpenModal("background")}
+                />
+              </div>
+
+              {/* Flag */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">FLAG</label>
+                  {selectedFlag && <span className="text-[10px] text-muted-foreground">{selectedFlag.name}</span>}
+                </div>
+                <AssetPickerButton
+                  label="Choose from gallery"
+                  onClick={() => setOpenModal("flag")}
+                />
+              </div>
+
+              {/* League */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">LEAGUE</label>
+                  {selectedLeague && <span className="text-[10px] text-muted-foreground">{selectedLeague.name}</span>}
+                </div>
+                <AssetPickerButton
+                  label="Choose from gallery"
+                  onClick={() => setOpenModal("league")}
+                />
+              </div>
+
+              {/* Club */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-display font-bold text-purple-300 tracking-wider">CLUB</label>
+                  {selectedClub && <span className="text-[10px] text-muted-foreground">{selectedClub.name}</span>}
+                </div>
+                <AssetPickerButton
+                  label="Choose from gallery"
+                  onClick={() => setOpenModal("club")}
+                />
+              </div>
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* ── Gallery Modals ── */}
-      <AssetGalleryModal
-        open={openModal === "background"}
-        onClose={() => setOpenModal(null)}
-        title="Card Backgrounds"
-        assets={bgGallery}
-        selectedId={selectedBg?.id}
-        onSelect={(a) => { setSelectedBg(a); setOpenModal(null); }}
-        onUpload={(a) => setBgGallery((prev) => [a, ...prev])}
-      />
-      <AssetGalleryModal
-        open={openModal === "flag"}
-        onClose={() => setOpenModal(null)}
-        title="Nation Flags"
-        assets={flagGallery}
-        selectedId={selectedFlag?.id}
-        onSelect={(a) => { setSelectedFlag(a); setOpenModal(null); }}
-        onUpload={(a) => setFlagGallery((prev) => [a, ...prev])}
-      />
-      <AssetGalleryModal
-        open={openModal === "league"}
-        onClose={() => setOpenModal(null)}
-        title="Leagues"
-        assets={leagueGallery}
-        selectedId={selectedLeague?.id}
-        onSelect={(a) => { setSelectedLeague(a); setOpenModal(null); }}
-        onUpload={(a) => setLeagueGallery((prev) => [a, ...prev])}
-      />
-      <AssetGalleryModal
-        open={openModal === "club"}
-        onClose={() => setOpenModal(null)}
-        title="Clubs"
-        assets={clubGallery}
-        selectedId={selectedClub?.id}
-        onSelect={(a) => { setSelectedClub(a); setOpenModal(null); }}
-        onUpload={(a) => setClubGallery((prev) => [a, ...prev])}
-      />
+      {/* ── Modals ── */}
+      <AnimatePresence>
+        {openModal && (
+          <AssetGalleryModal
+            open={openModal !== null}
+            onClose={() => setOpenModal(null)}
+            title={`Select ${openModal.toUpperCase()}`}
+            assets={
+              openModal === "background"
+                ? bgGallery
+                : openModal === "flag"
+                  ? flagGallery
+                  : openModal === "league"
+                    ? leagueGallery
+                    : clubGallery
+            }
+            onSelect={(asset) => handleAssetSelect(asset, openModal)}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* ── Download Modal ── */}
-      <DownloadModal
-        open={downloadOpen}
-        onClose={() => setDownloadOpen(false)}
-        onDownload={handleDownload}
-      />
+      {downloadOpen && (
+        <DownloadModal
+          open={downloadOpen}
+          onClose={() => setDownloadOpen(false)}
+          onDownload={handleDownload}
+        />
+      )}
     </div>
   );
 }
