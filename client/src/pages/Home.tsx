@@ -43,6 +43,7 @@ const DEFAULT_CARD_DATA: CardData = {
   nameColor: "#FFFFFF",
   ovrColor: "#FFFFFF",
   positionColor: "#FFFFFF",
+  renderUrl: "/card-creator/assets/kane-default.png",
 };
 
 // localStorage keys
