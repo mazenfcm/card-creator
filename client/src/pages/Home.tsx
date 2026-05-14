@@ -487,7 +487,7 @@ export default function Home() {
               {/* Player Render */}
               <div>
                 <label className="text-xs font-display font-bold text-purple-300 tracking-wider block mb-2">PLAYER RENDER</label>
-                <RenderUploadZone onUpload={handleRenderUpload} />
+                <RenderUploadZone value={renderUrl} onChange={(url) => setRenderUrl(url)} onUpload={handleRenderUpload} />
               </div>
 
               {/* Background */}
@@ -497,7 +497,8 @@ export default function Home() {
                   {selectedBg && <span className="text-[10px] text-muted-foreground">{selectedBg.name}</span>}
                 </div>
                 <AssetPickerButton
-                  label="Choose from gallery"
+                  label="Background"
+                  selected={selectedBg}
                   onClick={() => setOpenModal("background")}
                 />
               </div>
@@ -509,7 +510,8 @@ export default function Home() {
                   {selectedFlag && <span className="text-[10px] text-muted-foreground">{selectedFlag.name}</span>}
                 </div>
                 <AssetPickerButton
-                  label="Choose from gallery"
+                  label="Flag"
+                  selected={selectedFlag}
                   onClick={() => setOpenModal("flag")}
                 />
               </div>
@@ -521,7 +523,8 @@ export default function Home() {
                   {selectedLeague && <span className="text-[10px] text-muted-foreground">{selectedLeague.name}</span>}
                 </div>
                 <AssetPickerButton
-                  label="Choose from gallery"
+                  label="League"
+                  selected={selectedLeague}
                   onClick={() => setOpenModal("league")}
                 />
               </div>
@@ -533,7 +536,8 @@ export default function Home() {
                   {selectedClub && <span className="text-[10px] text-muted-foreground">{selectedClub.name}</span>}
                 </div>
                 <AssetPickerButton
-                  label="Choose from gallery"
+                  label="Club"
+                  selected={selectedClub}
                   onClick={() => setOpenModal("club")}
                 />
               </div>
