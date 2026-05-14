@@ -290,17 +290,14 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="text-xs font-display font-bold text-purple-300 tracking-wider">POSITION</label>
-                  <select
+                  <input
+                    type="text"
                     value={cardData.position}
-                    onChange={(e) => setCardData((prev) => ({ ...prev, position: e.target.value }))}
+                    onChange={(e) => setCardData((prev) => ({ ...prev, position: e.target.value.toUpperCase() }))}
+                    placeholder="e.g., ST, CM, CB"
+                    maxLength={3}
                     className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
-                  >
-                    {POSITIONS.map((pos) => (
-                      <option key={pos} value={pos}>
-                        {pos}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
