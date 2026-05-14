@@ -13,7 +13,7 @@ async function loadAssetsFromGitHub(folder: string): Promise<Asset[]> {
   try {
     // Get list of files from GitHub API
     const response = await fetch(
-      `https://api.github.com/repos/${GITHUB_REPO}/contents/assets/${folder}`
+      `https://api.github.com/repos/${GITHUB_REPO}/contents/card-creator/assets/${folder}`
     );
     
     if (!response.ok) {
@@ -30,7 +30,7 @@ async function loadAssetsFromGitHub(folder: string): Promise<Asset[]> {
       .map((file: any) => ({
         id: file.name,
         name: file.name.replace(/\.png$/, ''),
-        url: `${GITHUB_RAW_URL}/${GITHUB_REPO}/main/assets/${folder}/${file.name}`,
+        url: `${GITHUB_RAW_URL}/${GITHUB_REPO}/main/card-creator/assets/${folder}/${file.name}`,
       }))
       .sort((a: Asset, b: Asset) => a.name.localeCompare(b.name));
     

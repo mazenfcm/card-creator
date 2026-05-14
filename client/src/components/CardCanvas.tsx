@@ -37,13 +37,13 @@ const BASE = 1024;
 // Font sizes relative to 1024 base
 const FONT_NAME_SIZE = 88;  // 90 - 2
 const FONT_OVR_SIZE = 144;  // 145 - 1
-const FONT_POS_SIZE = 92;   // 91 + 1
+const FONT_POS_SIZE = 96;   // 92 + 4
 
 // Text boxes (x, y, w, h) at 1024 base
 const COORDS = {
-  name:     { x: 350, y: 664, w: 324, h: 91 },  // y +4
-  ovr:      { x: 223, y: 120, w: 162, h: 103 }, // x -2, y +4
-  position: { x: 257, y: 259, w: 94,  h: 65 },  // y +4
+  name:     { x: 348, y: 672, w: 324, h: 91 },  // x -2, y +8
+  ovr:      { x: 218, y: 133, w: 162, h: 103 }, // x -5, y +13
+  position: { x: 269, y: 274, w: 98,  h: 69 },  // x +12, y +15, size +4
 };
 
 // Asset positions at 1024 base
