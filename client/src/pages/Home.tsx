@@ -570,6 +570,19 @@ export default function Home() {
           onDownload={handleDownload}
         />
       )}
+
+      {/* ── Footer ── */}
+      <footer className="border-t border-border px-4 sm:px-6 py-3 sm:py-4 bg-background/50 flex items-center justify-between">
+        <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider">Created by <span className="font-display font-bold text-purple-400">MAZENFCM</span></p>
+        <motion.button
+          onClick={() => setDownloadOpen(true)}
+          className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white text-xs sm:text-sm font-display font-bold hover:bg-purple-700 transition-colors"
+          whileTap={{ scale: 0.96 }}
+        >
+          <Download size={14} />
+          Download
+        </motion.button>
+      </footer>
     </div>
   );
 }
