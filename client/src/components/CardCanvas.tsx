@@ -41,9 +41,9 @@ const FONT_POS_SIZE = 96;   // 92 + 4
 
 // Text boxes (x, y, w, h) at 1024 base
 const COORDS = {
-  name:     { x: 348, y: 672, w: 324, h: 91 },  // x -2, y +8
-  ovr:      { x: 218, y: 133, w: 162, h: 103 }, // x -5, y +13
-  position: { x: 258, y: 266, w: 97,  h: 68 },  // x +3, y +3
+  name:     { x: 357, y: 680, w: 324, h: 91 },  // x +9, y +8
+  ovr:      { x: 221, y: 123, w: 162, h: 103 }, // x +3, y -10
+  position: { x: 255, y: 262, w: 97,  h: 68 },  // x -3, y -4
 };
 
 // Asset positions at 1024 base
