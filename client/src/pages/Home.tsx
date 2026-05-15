@@ -575,6 +575,13 @@ export default function Home() {
                     : clubGallery
             }
             onSelect={(asset) => handleAssetSelect(asset, openModal)}
+            onUpload={(asset) => {
+              if (openModal === "background") setBgGallery(prev => [...prev, asset]);
+              if (openModal === "flag") setFlagGallery(prev => [...prev, asset]);
+              if (openModal === "league") setLeagueGallery(prev => [...prev, asset]);
+              if (openModal === "club") setClubGallery(prev => [...prev, asset]);
+              handleAssetSelect(asset, openModal);
+            }}
           />
         )}
       </AnimatePresence>
