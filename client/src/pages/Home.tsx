@@ -220,17 +220,29 @@ export default function Home() {
   // Sync selected assets into cardData and apply background colors
   useEffect(() => {
     const bgColors = (window as any).bgColorPresets?.get(selectedBg?.name);
-    setCardData((prev) => ({
-      ...prev,
-      backgroundUrl: selectedBg?.url,
-      nationUrl: selectedFlag?.url,
-      leagueUrl: selectedLeague?.url,
-      clubUrl: selectedClub?.url,
-      renderUrl,
-      nameColor: bgColors?.nameColor || prev.nameColor,
-      positionColor: bgColors?.posColor || prev.positionColor,
-      ovrColor: bgColors?.ovrColor || prev.ovrColor,
-    }));
+    if (bgColors) {
+      setCardData((prev) => ({
+        ...prev,
+        backgroundUrl: selectedBg?.url,
+        nationUrl: selectedFlag?.url,
+        leagueUrl: selectedLeague?.url,
+        clubUrl: selectedClub?.url,
+        renderUrl,
+        nameColor: bgColors.nameColor,
+        positionColor: bgColors.posColor,
+        ovrColor: bgColors.ovrColor,
+      }));
+      console.log("Applied background colors:", bgColors);
+    } else {
+      setCardData((prev) => ({
+        ...prev,
+        backgroundUrl: selectedBg?.url,
+        nationUrl: selectedFlag?.url,
+        leagueUrl: selectedLeague?.url,
+        clubUrl: selectedClub?.url,
+        renderUrl,
+      }));
+    }
     triggerPulse();
   }, [selectedBg, selectedFlag, selectedLeague, selectedClub, renderUrl]);
 
