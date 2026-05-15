@@ -48,14 +48,20 @@ export default function AssetGalleryModal({
       if (!files || !onUpload) return;
       Array.from(files).forEach((file) => {
         if (!file.type.startsWith("image/")) return;
-        const url = URL.createObjectURL(file);
-        const asset: GalleryAsset = {
-          id: `upload-${Date.now()}-${Math.random()}`,
-          name: file.name.replace(/\.[^.]+$/, ""),
-          url,
-          file,
+        
+        // Use FileReader for better iPhone compatibility
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const url = e.target?.result as string;
+          const asset: GalleryAsset = {
+            id: `upload-${Date.now()}-${Math.random()}`,
+            name: file.name.replace(/\.[^.]+$/, ""),
+            url,
+            file,
+          };
+          onUpload(asset);
         };
-        onUpload(asset);
+        reader.readAsDataURL(file);
       });
     },
     [onUpload]
