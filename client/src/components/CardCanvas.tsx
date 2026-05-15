@@ -41,21 +41,21 @@ const FONT_POS_SIZE = 96;   // 92 + 4
 
 // Text boxes (x, y, w, h) at 1024 base
 const COORDS = {
-  name:     { x: 357, y: 680, w: 324, h: 91 },  // x +9, y +8
-  ovr:      { x: 221, y: 123, w: 162, h: 103 }, // x +3, y -10
+  name:     { x: 345, y: 667, w: 324, h: 91 },  // x -6, y -13
+  ovr:      { x: 223, y: 124, w: 162, h: 103 }, // x +2, y +1
   position: { x: 255, y: 262, w: 97,  h: 68 },  // x -3, y -4
 };
 
 // Asset positions at 1024 base
 const ASSET_POSITIONS = {
   Icon: {
-    nation: { x: 329, y: 752, w: 96, h: 96 },
-    league: { x: 585, y: 752, w: 96, h: 96 },
+    nation: { x: 332, y: 752, w: 96, h: 96 },     // flag x +3
+    league: { x: 594, y: 767, w: 91, h: 91 },     // league x +9, y +15, size -5
   },
   Live: {
     nation: { x: 255, y: 752, w: 96, h: 96 },
-    league: { x: 468, y: 752, w: 96, h: 96 },
-    club:   { x: 672, y: 752, w: 96, h: 96 },
+    league: { x: 464, y: 752, w: 96, h: 96 },     // league x -4
+    club:   { x: 674, y: 755, w: 95, h: 95 },     // club x +2, y +3, size -1
   },
 };
 
