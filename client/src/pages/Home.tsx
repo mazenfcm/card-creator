@@ -257,10 +257,22 @@ export default function Home() {
   }, []);
 
   const handleAssetSelect = useCallback((asset: GalleryAsset, type: "background" | "flag" | "league" | "club") => {
-    if (type === "background") setSelectedBg(asset);
-    if (type === "flag") setSelectedFlag(asset);
-    if (type === "league") setSelectedLeague(asset);
-    if (type === "club") setSelectedClub(asset);
+    if (type === "background") {
+      setSelectedBg(asset);
+      localStorage.setItem(STORAGE_KEYS.selectedBg, JSON.stringify(asset));
+    }
+    if (type === "flag") {
+      setSelectedFlag(asset);
+      localStorage.setItem(STORAGE_KEYS.selectedFlag, JSON.stringify(asset));
+    }
+    if (type === "league") {
+      setSelectedLeague(asset);
+      localStorage.setItem(STORAGE_KEYS.selectedLeague, JSON.stringify(asset));
+    }
+    if (type === "club") {
+      setSelectedClub(asset);
+      localStorage.setItem(STORAGE_KEYS.selectedClub, JSON.stringify(asset));
+    }
     setOpenModal(null);
   }, []);
 

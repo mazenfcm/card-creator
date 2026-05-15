@@ -97,7 +97,7 @@ export default function AssetGalleryModal({
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <div>
-                <p className="section-label mb-0.5">Select Asset</p>
+                <p className="section-label mb-0.5">Select Photos</p>
                 <h2 className="font-display text-base font-bold text-foreground">{title}</h2>
               </div>
               <button
