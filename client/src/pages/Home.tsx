@@ -195,8 +195,31 @@ export default function Home() {
     }
   }, [backgrounds]);
 
-  // Sync selected assets into cardData
+  // Load background color presets from JSON
   useEffect(() => {
+    const loadColorPresets = async () => {
+      try {
+        const response = await fetch("/card-creator/assets/background-colors.json");
+        const data = await response.json();
+        const bgColorMap = new Map();
+        data.backgrounds.forEach((bg: any) => {
+          bgColorMap.set(bg.name, {
+            nameColor: bg.nameColor,
+            posColor: bg.posColor,
+            ovrColor: bg.ovrColor,
+          });
+        });
+        (window as any).bgColorPresets = bgColorMap;
+      } catch (error) {
+        console.error("Failed to load background color presets:", error);
+      }
+    };
+    loadColorPresets();
+  }, []);
+
+  // Sync selected assets into cardData and apply background colors
+  useEffect(() => {
+    const bgColors = (window as any).bgColorPresets?.get(selectedBg?.name);
     setCardData((prev) => ({
       ...prev,
       backgroundUrl: selectedBg?.url,
@@ -204,6 +227,9 @@ export default function Home() {
       leagueUrl: selectedLeague?.url,
       clubUrl: selectedClub?.url,
       renderUrl,
+      nameColor: bgColors?.nameColor || prev.nameColor,
+      positionColor: bgColors?.posColor || prev.positionColor,
+      ovrColor: bgColors?.ovrColor || prev.ovrColor,
     }));
     triggerPulse();
   }, [selectedBg, selectedFlag, selectedLeague, selectedClub, renderUrl]);

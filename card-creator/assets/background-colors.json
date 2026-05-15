@@ -1,0 +1,32 @@
+{
+  "backgrounds": [
+    {
+      "id": "backgrounds_TOTS26_ICON",
+      "name": "backgrounds_TOTS26_ICON",
+      "nameColor": "#2F515F",
+      "posColor": "#2F515F",
+      "ovrColor": "#2F515F"
+    },
+    {
+      "id": "backgrounds_TOTS26_LIVE",
+      "name": "backgrounds_TOTS26_LIVE",
+      "nameColor": "#FFFFFF",
+      "posColor": "#FFFFFF",
+      "ovrColor": "#FFFFFF"
+    },
+    {
+      "id": "backgrounds_PP26_LIVE",
+      "name": "backgrounds_PP26_LIVE",
+      "nameColor": "#FCEC0F",
+      "posColor": "#FCEC0F",
+      "ovrColor": "#FCEC0F"
+    },
+    {
+      "id": "backgrounds_PP26_ICON",
+      "name": "backgrounds_PP26_ICON",
+      "nameColor": "#053379",
+      "posColor": "#053379",
+      "ovrColor": "#053379"
+    }
+  ]
+}
