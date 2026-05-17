@@ -196,6 +196,8 @@ export default function Home() {
   }, [backgrounds]);
 
   // Load background color presets from JSON
+  const [bgColorPresets, setBgColorPresets] = useState<Map<string, any>>(new Map());
+  
   useEffect(() => {
     const loadColorPresets = async () => {
       try {
@@ -209,7 +211,8 @@ export default function Home() {
             ovrColor: bg.ovrColor,
           });
         });
-        (window as any).bgColorPresets = bgColorMap;
+        setBgColorPresets(bgColorMap);
+        console.log("Loaded color presets:", bgColorMap);
       } catch (error) {
         console.error("Failed to load background color presets:", error);
       }
@@ -219,7 +222,7 @@ export default function Home() {
 
   // Sync selected assets into cardData and apply background colors
   useEffect(() => {
-    const bgColors = (window as any).bgColorPresets?.get(selectedBg?.name);
+    const bgColors = selectedBg?.name ? bgColorPresets.get(selectedBg.name) : undefined;
     if (bgColors) {
       setCardData((prev) => ({
         ...prev,
@@ -244,7 +247,7 @@ export default function Home() {
       }));
     }
     triggerPulse();
-  }, [selectedBg, selectedFlag, selectedLeague, selectedClub, renderUrl]);
+  }, [selectedBg, selectedFlag, selectedLeague, selectedClub, renderUrl, bgColorPresets]);
 
   const triggerPulse = useCallback(() => {
     setCardPulse(true);

@@ -34,6 +34,15 @@ const QUALITIES = [
     color: "text-yellow-400",
     bg: "bg-yellow-500/10 border-yellow-500/30",
   },
+  {
+    size: 2048,
+    label: "2048 × 2048",
+    tag: "Ultra HD",
+    desc: "Highest resolution, premium quality",
+    icon: Crown,
+    color: "text-red-400",
+    bg: "bg-red-500/10 border-red-500/30",
+  },
 ];
 
 interface DownloadModalProps {
