@@ -201,7 +201,7 @@ export default function Home() {
   useEffect(() => {
     const loadColorPresets = async () => {
       try {
-        const response = await fetch("/card-creator/assets/background-colors.json");
+        const response = await fetch("./assets/background-colors.json");
         const data = await response.json();
         const bgColorMap = new Map();
         data.backgrounds.forEach((bg: any) => {
